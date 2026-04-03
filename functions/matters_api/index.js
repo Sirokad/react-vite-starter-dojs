@@ -10,7 +10,6 @@ module.exports = async (req, res) => {
 
     const method = req.method;
 
-    // GET → fetch all matters
     if (method === "GET") {
       const records = await table.getAllRows();
 
@@ -20,14 +19,13 @@ module.exports = async (req, res) => {
       });
     }
 
-    // POST → create new matter
     if (method === "POST") {
       const body = typeof req.body === "string"
         ? JSON.parse(req.body)
         : req.body;
 
       const inserted = await table.insertRow({
-        matter_no: body.matterNo,
+        matter_no: body.title ? `MAT-${new Date().getFullYear()}-${Date.now()}` : "",
         title: body.title,
         type: body.type,
         owner: body.owner,

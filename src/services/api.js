@@ -1,17 +1,34 @@
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const MATTERS_API_URL = import.meta.env.VITE_MATTERS_API_URL;
 
-export async function apiGet(path) {
-  const response = await fetch(`${BASE_URL}${path}`);
-  return response.json();
+export async function getMatters() {
+  const response = await fetch(MATTERS_API_URL, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`GET failed: ${response.status}`);
+  }
+
+  const result = await response.json();
+  return result.data || [];
 }
 
-export async function apiPost(path, body) {
-  const response = await fetch(`${BASE_URL}${path}`, {
+export async function createMatter(payload) {
+  const response = await fetch(MATTERS_API_URL, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify(body)
+    body: JSON.stringify(payload),
   });
-  return response.json();
+
+  if (!response.ok) {
+    throw new Error(`POST failed: ${response.status}`);
+  }
+
+  const result = await response.json();
+  return result.data;
 }

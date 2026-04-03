@@ -17,6 +17,7 @@ function ProtectedRoutes() {
   const { currentUser } = useAppData();
 
   if (!currentUser) {
+   
     return <Navigate to="/login" replace />;
   }
 
