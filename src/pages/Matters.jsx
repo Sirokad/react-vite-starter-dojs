@@ -1,3 +1,24 @@
+import { Link } from "react-router-dom";
+import Table from "../components/ui/Table";
+import StatusBadge from "../components/ui/StatusBadge";
+
+const rows = [
+  {
+    matterNo: "MAT-2026-001",
+    title: "Supplier dispute - ABC Co",
+    type: "Dispute",
+    owner: "Legal Team",
+    status: "Open"
+  },
+  {
+    matterNo: "MAT-2026-002",
+    title: "Employment review",
+    type: "Advisory",
+    owner: "HR / Legal",
+    status: "In Review"
+  }
+];
+
 export default function Matters() {
   const columns = [
     { key: "matterNo", label: "Matter No" },
