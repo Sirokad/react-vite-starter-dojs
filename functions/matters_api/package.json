@@ -1,0 +1,9 @@
+{
+	"name": "matters_api",
+	"version": "1.0.0",
+	"main": "index.js",
+	"author": "taisir.elkodmani@al-rashed.com",
+	"dependencies": {
+		"zcatalyst-sdk-node": "latest"
+	}
+}

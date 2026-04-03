@@ -13,7 +13,8 @@
     "axios": "^1.14.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^7.14.0"
+    "react-router-dom": "^7.14.0",
+    "zcatalyst-sdk-node": "^3.3.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",

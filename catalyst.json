@@ -1,1 +1,9 @@
-{}
+{
+  "functions": {
+    "targets": [
+      "matters_api"
+    ],
+    "ignore": [],
+    "source": "functions"
+  }
+}
