@@ -1,13 +1,25 @@
+import { useAppData } from "../../context/AppDataContext";
+
 export default function Topbar() {
+  const { currentUser, logout } = useAppData();
+
   return (
     <header className="topbar">
       <div>
-        <h2>Legal Management System</h2>
-        <p>Matters, contracts, documents, and legal operations</p>
+        <h1 className="topbar-title">Legal Management System</h1>
+        <p className="topbar-subtitle">
+          Matters, documents, contracts, legal users, and audit tracking
+        </p>
       </div>
 
-      <div className="topbar-user">
-        Admin User
+      <div className="topbar-right">
+        <div className="user-chip">
+          <div className="user-chip-name">{currentUser?.name}</div>
+          <div className="user-chip-role">{currentUser?.role}</div>
+        </div>
+        <button className="btn btn-outline" onClick={logout}>
+          Logout
+        </button>
       </div>
     </header>
   );
