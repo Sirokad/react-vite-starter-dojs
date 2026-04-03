@@ -2,74 +2,75 @@
 
 const catalyst = require("zcatalyst-sdk-node");
 
-async function getAllRowsPaged(table) {
-  let allRows = [];
-  let hasNext = true;
-  let nextToken = undefined;
-
-  while (hasNext) {
-    const response = await table.getMyPagedRows({
-      next_token: nextToken,
-      max_rows: 200,
-    });
-
-    const rows = response?.data || [];
-    allRows = allRows.concat(rows);
-
-    hasNext = response?.pagination?.has_more_records || false;
-    nextToken = response?.pagination?.next_token;
-  }
-
-  return allRows;
-}
-
-module.exports = async (req, res) => {
+module.exports = async (context, basicIO) => {
   try {
-    const app = catalyst.initialize(req);
+    const app = catalyst.initialize(context);
     const datastore = app.datastore();
     const table = datastore.table("matters");
 
-    if (req.method === "GET") {
-      const records = await getAllRowsPaged(table);
+    const method = context.requestType || "GET";
 
-      return res.send({
+    if (method === "GET") {
+      let allRows = [];
+      let hasNext = true;
+      let nextToken;
+
+      while (hasNext) {
+        const response = await table.getMyPagedRows({
+          next_token: nextToken,
+          max_rows: 200,
+        });
+
+        const rows = response?.data || [];
+        allRows = allRows.concat(rows);
+
+        hasNext = response?.pagination?.has_more_records || false;
+        nextToken = response?.pagination?.next_token;
+      }
+
+      basicIO.write(JSON.stringify({
         success: true,
-        data: records,
-      });
+        data: allRows,
+      }));
+      context.close();
+      return;
     }
 
-    if (req.method === "POST") {
-      const body =
-        typeof req.body === "string" ? JSON.parse(req.body) : req.body;
+    if (method === "POST") {
+      const body = basicIO.getAllArguments ? basicIO.getAllArguments() : {};
+      const input = typeof body === "string" ? JSON.parse(body) : body;
 
       const inserted = await table.insertRow({
         matter_no: `MAT-${new Date().getFullYear()}-${Date.now()}`,
-        title: body.title || "",
-        type: body.type || "",
-        owner: body.owner || "",
-        department: body.department || "",
-        status: body.status || "Open",
-        opened_date: body.openedDate || "",
-        priority_: body.priority || "",
-        description: body.description || "",
+        title: input.title || "",
+        type: input.type || "",
+        owner: input.owner || "",
+        department: input.department || "",
+        status: input.status || "Open",
+        opened_date: input.openedDate || "",
+        priority: input.priority || "",
+        description: input.description || "",
       });
 
-      return res.send({
+      basicIO.write(JSON.stringify({
         success: true,
         data: inserted,
-      });
+      }));
+      context.close();
+      return;
     }
 
-    return res.status(405).send({
+    basicIO.write(JSON.stringify({
       success: false,
       message: "Method not allowed",
-    });
+    }));
+    context.close();
   } catch (error) {
-    console.error("matters_api error:", error);
-
-    return res.status(500).send({
+    context.log("matters_api error:", error);
+    basicIO.write(JSON.stringify({
       success: false,
       message: error.message,
-    });
+    }));
+    context.close();
   }
 };

@@ -13,7 +13,7 @@ export default function MatterFormPage() {
     department: "Legal",
     status: "Open",
     openedDate: "",
-    priority_: "Medium",
+    priority: "Medium",
     description: "",
   });
 
